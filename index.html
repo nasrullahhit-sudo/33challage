@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>30-Day Personal Discipline Challenge Tracker</title>
+<style>
+:root{--bg:#0a0a0c;--card:#141418;--inp:#1d1d24;--line:#2a2a36;--txt:#f0f0f5;--mut:#9a9aab;--gold:#d4af37;--gold2:#f3cf55;--green:#2ecc71;--red:#e74c3c}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,'Hind Siliguri',system-ui,sans-serif}
+body{background:radial-gradient(900px 500px at 90% -10%,rgba(212,175,55,.09),transparent 60%),var(--bg);color:var(--txt);line-height:1.5;padding:15px;max-width:1200px;margin:0 auto}
+header{text-align:center;margin-bottom:18px;border-bottom:1px solid var(--line);padding-bottom:14px}
+h1{color:var(--gold);font-size:1.6rem;letter-spacing:.5px}.quote{font-style:italic;color:var(--mut);font-size:.95rem}
+.dashboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center}
+.stat b{display:block;font-size:1.35rem;color:var(--gold);margin-top:3px}.stat span{font-size:.75rem;color:var(--mut)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:15px;margin-bottom:16px}
+.card h2{font-size:1.05rem;color:var(--gold);margin-bottom:12px;border-bottom:1px solid var(--line);padding-bottom:6px}
+.bar{background:var(--inp);border-radius:10px;height:14px;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;background:linear-gradient(90deg,#b8860b,var(--gold));transition:width .35s}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.btn{background:var(--card);border:1px solid var(--gold);color:var(--gold);padding:10px 16px;border-radius:8px;cursor:pointer;font-weight:600;min-height:42px}
+.btn:hover{background:var(--gold);color:var(--bg)}.btn.red{border-color:var(--red);color:var(--red)}.btn.red:hover{background:var(--red);color:#fff}
+.btn:focus-visible,input:focus-visible,textarea:focus-visible,.day:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
+.days{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;margin-bottom:16px}
+.day{min-width:64px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px;text-align:center;cursor:pointer;flex-shrink:0;color:var(--txt)}
+.day small{display:block;font-size:.65rem;color:var(--mut)}.day.act{border-color:var(--gold);background:var(--inp)}
+.day.ok{border-left:4px solid var(--green)}.day.part{border-left:4px solid var(--gold)}.day.miss{border-left:4px solid var(--red)}.day.fut{opacity:.5}.day.today small{color:var(--gold2)}
+.grid{display:grid;grid-template-columns:1fr;gap:16px}@media(min-width:768px){.grid{grid-template-columns:3fr 2fr}}
+.item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #1a1a22}.item label{flex:1;cursor:pointer;font-size:.92rem}
+.item input{width:20px;height:20px;accent-color:var(--gold);cursor:pointer}.item.on label{color:var(--mut);text-decoration:line-through}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:10px}.fg{display:flex;flex-direction:column;gap:4px}.fg.w{grid-column:span 2}.fg label{font-size:.75rem;color:var(--mut)}
+input[type=number],textarea{background:var(--inp);border:1px solid var(--line);border-radius:6px;color:var(--txt);padding:9px;font-size:.9rem;width:100%}textarea{min-height:90px;resize:vertical}
+.acts{display:flex;gap:10px;flex-wrap:wrap}.note{font-size:.72rem;color:var(--mut);margin-top:8px}
+table{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:8px}th,td{border:1px solid var(--line);padding:7px;text-align:left}th{background:var(--inp);color:var(--gold)}
+.chart{display:flex;align-items:flex-end;gap:8px;height:120px;margin-top:10px}.chart div{flex:1;text-align:center;font-size:.65rem;color:var(--mut)}.chart i{display:block;background:var(--gold);border-radius:4px 4px 0 0;min-height:2px}
+#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#f0f0f5;color:#111;padding:9px 16px;border-radius:8px;font-size:.82rem;font-weight:600;display:none;z-index:9}#toast.bad{background:var(--red);color:#fff}
+[data-theme=light]{--bg:#f6f4ee;--card:#fff;--inp:#efece4;--line:#d9d5c8;--txt:#1b1b1f;--mut:#5e5e6b;--gold:#8a6a00;--gold2:#b58900}
+.mini{padding:6px 10px!important;min-height:34px!important;font-size:.8rem}.ren{flex:1;min-width:0;background:var(--inp);border:1px solid var(--line);color:var(--txt);border-radius:6px;padding:8px;font-size:.9rem}
+.wsel{flex:0 0 auto;background:var(--inp);border:1px solid var(--line);color:var(--txt);border-radius:6px;padding:8px;font-size:.8rem}
+#addrow{display:flex;gap:8px;margin-top:10px}#addrow input{flex:1;background:var(--inp);border:1px solid var(--line);color:var(--txt);border-radius:6px;padding:9px}.card h2{display:flex;justify-content:space-between;align-items:center;gap:8px}
+@media print{.mini,#addrow{display:none!important}.acts,.nav,.days,#toast{display:none}body{background:#fff;color:#000}.card,.stat{border-color:#999;background:#fff}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body>
+<header><h1>30-Day Personal Discipline Challenge</h1><p class="quote">"Discipline is Power | Keep Going!"</p><button class="btn mini" id="theme" type="button" style="margin-top:8px">Light / Dark</button></header>
+<section class="dashboard" id="dash"></section>
+<section class="card"><div style="display:flex;justify-content:space-between;font-size:.85rem"><span>Overall Challenge Completion</span><span id="ptxt">0%</span></div><div class="bar"><i id="pbar" style="width:0"></i></div></section>
+<div class="nav"><button class="btn" id="prev">← Previous Day</button><b id="head" style="color:var(--gold)"></b><button class="btn" id="next">Next Day →</button></div>
+<div class="days" id="days" role="tablist"></div>
+<div class="grid"><div>
+<div class="card"><h2><span id="ctitle"></span><button class="btn mini" id="editbtn" type="button">Edit tasks</button></h2><div id="list"></div><div id="addrow" hidden><input id="newtask" maxlength="100" placeholder="New task name" aria-label="New task name"><button class="btn mini" id="addbtn" type="button">Add task</button></div><p class="note" id="daypct"></p></div>
+<div class="card"><h2>Last 7 days</h2><div class="chart" id="chart"></div></div></div>
+<div><div class="card"><h2>Daily Metrics &amp; Notes</h2><div class="form">
+<div class="fg"><label for="m-water">Water (glasses)</label><input type="number" id="m-water" min="0" max="50" step="1"></div>
+<div class="fg"><label for="m-cst">CST study (hours)</label><input type="number" id="m-cst" min="0" max="24" step="0.5"></div>
+<div class="fg"><label for="m-fImp">Fiverr impressions</label><input type="number" id="m-fImp" min="0"></div>
+<div class="fg"><label for="m-fClicks">Fiverr clicks</label><input type="number" id="m-fClicks" min="0"></div>
+<div class="fg"><label for="m-fReplies">Fiverr replies</label><input type="number" id="m-fReplies" min="0"></div>
+<div class="fg"><label for="m-fOrders">Fiverr orders</label><input type="number" id="m-fOrders" min="0"></div>
+<div class="fg w"><label for="m-igDms">Instagram outreach DMs sent</label><input type="number" id="m-igDms" min="0"></div>
+<div class="fg w"><label for="m-notes">Daily notes / reflection</label><textarea id="m-notes" placeholder="Wins, blockers, lessons..."></textarea></div></div>
+<p class="note" id="mhint"></p></div>
+<div class="card"><h2>Daily Targets &amp; Reminder</h2><div class="form">
+<div class="fg"><label for="g-water">Water goal (glasses)</label><input type="number" id="g-water" min="0"></div>
+<div class="fg"><label for="g-cst">CST goal (hours)</label><input type="number" id="g-cst" min="0" step="0.5"></div>
+<div class="fg w"><label for="g-igDms">Outreach DMs goal</label><input type="number" id="g-igDms" min="0"></div></div>
+<div id="goals"></div>
+<div class="acts" style="margin-top:14px;align-items:center"><label style="font-size:.85rem;display:flex;gap:8px;align-items:center"><input type="checkbox" id="r-on" style="width:20px;height:20px;accent-color:var(--gold)"> Daily reminder at</label><input type="time" id="r-time" aria-label="Reminder time" style="background:var(--inp);border:1px solid var(--line);color:var(--txt);border-radius:6px;padding:8px"></div><p class="note" id="r-note"></p></div>
+<div class="card"><h2>Data Backup &amp; Tools</h2><div class="acts"><button class="btn" id="exp">Export Backup (JSON)</button><button class="btn" id="imp">Import Backup</button><button class="btn" id="csv">Export CSV</button><button class="btn" id="prt">Print report</button><button class="btn red" id="rst">Reset Challenge</button></div>
+<input type="file" id="file" accept=".json,application/json" hidden>
+<p class="note">Your data is saved only in this browser on this device. It does not sync to other phones or computers, and clearing site data erases it. Export a backup regularly.</p><p class="note" id="saved"></p></div></div></div>
+<section class="card"><h2 id="rtitle">Weekly Performance &amp; Final Report</h2><div style="overflow-x:auto"><table id="wk"></table></div><div id="miss"></div></section>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+(function(){'use strict';
+const KEY='DISCIPLINE30_V2',START='2026-10-26',PASS=70,
+DEF=['Complete all five daily prayers','Quran and Hadith study','CST study','English course practice','Typing practice','Exercise','Get 8 hours of sleep','Stay online on Fiverr as planned','Publish a LinkedIn video post at 8:00 PM BST','Upload or schedule Musiela YouTube videos','Post a Musiela Instagram music video','Send 20 Instagram outreach DMs','Work on portfolio or Fiverr gigs','Keep Instagram/Facebook Reels scrolling within 1 hour'],
+MK=['water','cst','fImp','fClicks','fReplies','fOrders','igDms'],$=i=>document.getElementById(i),pad=n=>String(n).padStart(2,'0');let T=DEF.slice(),EDIT=false;const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ymd=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`,parse=s=>{const[a,b,c]=s.split('-').map(Number);return new Date(a,b-1,c)};
+const dd=n=>{const x=parse(START);x.setDate(x.getDate()+n-1);return x},short=n=>dd(n).toLocaleDateString('en-US',{month:'short',day:'numeric'}),long=n=>dd(n).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+const todayN=()=>Math.round((parse(ymd(new Date()))-parse(START))/864e5)+1,fut=n=>n>todayN(),past=n=>n<todayN();
+const blank=()=>({tasks:T.map(()=>false),m:{water:0,cst:0,fImp:0,fClicks:0,fReplies:0,fOrders:0,igDms:0,notes:''}});
+const fresh=()=>({v:2,sel:1,names:DEF.slice(),w:DEF.map(()=>1),goals:{water:8,cst:2,igDms:20},remind:{on:false,time:'20:00',last:''},days:Array.from({length:30},blank)});
+function toast(m,bad){const t=$('toast');t.textContent=m;t.className=bad?'bad':'';t.style.display='block';clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',3200)}
+function clean(raw){ // accepts the new object, or the original app's array of 14-task day objects
+ const arr=Array.isArray(raw)?raw:(raw&&Array.isArray(raw.days)?raw.days:null);if(!arr||arr.length!==30)return null;
+ let names=DEF.slice();if(!Array.isArray(raw)&&Array.isArray(raw.names)){names=raw.names.map(x=>String(x).trim().slice(0,100));if(!names.length||names.length>30||names.some(x=>!x))return null}
+ const days=[];for(const x of arr){const tk=x&&x.tasks,m=(x&&(x.m||x.metrics))||{};if(!Array.isArray(tk)||tk.length!==names.length)return null;
+  const o={tasks:tk.map(Boolean),m:{notes:String(m.notes||'').slice(0,5000)}};MK.forEach(k=>{const v=parseFloat(m[k]);o.m[k]=isFinite(v)&&v>0?v:0});days.push(o)}
+ const w=(!Array.isArray(raw)&&Array.isArray(raw.w)&&raw.w.length===names.length&&raw.w.every(x=>x>=1&&x<=3))?raw.w.map(Number):names.map(()=>1);
+ const g0=(!Array.isArray(raw)&&raw.goals)||{},goals={};[['water',8],['cst',2],['igDms',20]].forEach(([k,dv])=>{const v=parseFloat(g0[k]);goals[k]=isFinite(v)&&v>=0&&v<=1e4?v:dv});
+ const rm=(!Array.isArray(raw)&&raw.remind)||{};
+ return{v:2,sel:1,names,w,goals,remind:{on:!!rm.on,time:/^\d\d:\d\d$/.test(rm.time)?rm.time:'20:00',last:''},days}}
+let S;try{const r=localStorage.getItem(KEY);S=r?clean(JSON.parse(r)):null;if(r&&!S)localStorage.setItem(KEY+'_CORRUPT',r)}catch(e){S=null}
+if(!S)S=fresh();T=S.names;
+const tn=todayN();S.sel=tn<1?1:tn>30?30:tn;
+function save(){try{S.updated=new Date().toISOString();localStorage.setItem(KEY,JSON.stringify(S));$('saved').textContent='Last saved: '+new Date().toLocaleString()}catch(e){toast('Could not save. Export a backup now.',true)}}
+const done=n=>S.days[n-1].tasks.filter(Boolean).length,pct=n=>{const t=S.w.reduce((a,b)=>a+b,0);return Math.round(S.days[n-1].tasks.reduce((a,v,i)=>a+(v?S.w[i]:0),0)/t*100)},sel=()=>S.days[S.sel-1];
+function streaks(){const t=todayN();let run=0,best=0;for(let n=1;n<=Math.min(30,t);n++){if(pct(n)>=PASS){run++;best=Math.max(best,run)}else if(n!==t)run=0}return{cur:run,best}}
+function render(){
+ const t=todayN(),tot=S.days.reduce((a,d,i)=>a+done(i+1),0),op=Math.round(tot/(30*T.length)*100),st=streaks();
+ let dm=0,study=0,imp=0,clk=0,ord=0;S.days.forEach(d=>{dm+=d.m.igDms;study+=d.m.cst;imp+=d.m.fImp;clk+=d.m.fClicks;ord+=d.m.fOrders});
+const dtd=t>=1&&t<=30?S.days[t-1].m:null,act=['water','cst','igDms'].filter(k=>S.goals[k]>0),hit=dtd?act.filter(k=>dtd[k]>=S.goals[k]).length:0;
+ const cards=[['Current Day',t<1?'Starts '+short(1):t>30?'Finished':'Day '+t],['Date',new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})],['Overall Progress',op+'%'],['Today Completed',t>=1&&t<=30?pct(t)+'%':'—'],['Tasks Done',tot+'/'+30*T.length],['Current Streak',st.cur+' d'],['Best Streak',st.best+' d'],['Targets Today',dtd&&act.length?hit+'/'+act.length:'—'],['Total Study',study.toFixed(1)+' hrs'],['Total DMs',dm],['Fiverr',`${imp} imp · ${clk} clk · ${ord} ord · CTR ${imp?(clk/imp*100).toFixed(1):'0.0'}%`]];
+ $('dash').innerHTML=cards.map(([a,b])=>`<div class="stat"><span>${a}</span><b${String(b).length>14?' style="font-size:.8rem"':''}>${b}</b></div>`).join('');
+ $('ptxt').textContent=op+'%';$('pbar').style.width=op+'%';
+ $('head').textContent=`Day ${S.sel} (${long(S.sel)})${fut(S.sel)?' · upcoming':S.sel===t?' · today':''}`;
+ $('prev').disabled=S.sel<=1;$('next').disabled=S.sel>=30;
+ $('days').innerHTML='';for(let n=1;n<=30;n++){const p=pct(n),b=document.createElement('button');b.type='button';
+  b.className='day '+(n===S.sel?'act ':'')+(fut(n)?'fut ':p>=PASS?'ok ':p>0?'part ':past(n)?'miss ':'')+(n===t?'today':'');
+  b.innerHTML=`Day ${n}<small>${short(n)}</small>`;b.setAttribute('aria-label',`Day ${n}, ${short(n)}, ${fut(n)?'upcoming':p+'%'}`);b.onclick=()=>{S.sel=n;save();render()};$('days').appendChild(b)}
+ const d=sel();$('ctitle').textContent=`Daily Checklist (${T.length} Tasks)`;$('editbtn').textContent=EDIT?'Done editing':'Edit tasks';$('addrow').hidden=!EDIT;$('list').innerHTML='';
+ T.forEach((x,i)=>{const r=document.createElement('div');r.className='item'+(d.tasks[i]&&!EDIT?' on':'');
+  if(EDIT){r.innerHTML=`<input class="ren" value="${esc(x)}" maxlength="100" aria-label="Task ${i+1} name"><select class="wsel" data-w aria-label="Importance">${['Normal','Important','Critical'].map((l,k)=>`<option value="${k+1}" ${S.w[i]==k+1?'selected':''}>${l}</option>`).join('')}</select><button class="btn mini" data-a="up" aria-label="Move up">↑</button><button class="btn mini" data-a="dn" aria-label="Move down">↓</button><button class="btn mini red" data-a="rm" aria-label="Delete task">✕</button>`;
+   r.querySelector('.ren').onchange=e=>{const v=e.target.value.trim().slice(0,100);if(v){T[i]=v;save()}render()};
+   r.querySelector('[data-w]').onchange=e=>{S.w[i]=+e.target.value;save();render()};
+   r.querySelectorAll('button').forEach(b=>b.onclick=()=>editTask(i,b.dataset.a))}
+  else{r.innerHTML=`<input type="checkbox" id="task-${i}" ${d.tasks[i]?'checked':''}><label for="task-${i}">${i+1}. ${esc(x)}${'★'.repeat(S.w[i]-1)}</label>`;
+   r.firstChild.onchange=e=>{d.tasks[i]=e.target.checked;save();render()}}
+  $('list').appendChild(r)});
+ $('daypct').textContent=`${done(S.sel)}/${T.length} done · ${pct(S.sel)}% for this day${S.w.some(x=>x>1)?' (weighted by importance)':''}`;
+ MK.forEach(k=>{$('m-'+k).value=d.m[k]||''});$('m-notes').value=d.m.notes;
+ $('mhint').textContent=d.m.fClicks>d.m.fImp?'Check: clicks are higher than impressions.':d.m.fImp?`CTR for this day: ${(d.m.fClicks/d.m.fImp*100).toFixed(1)}%`:'';
+ const gl=[['water','Water','glasses'],['cst','CST study','h'],['igDms','Outreach DMs','']];
+ $('goals').innerHTML=gl.map(([k,l,u])=>{const g=S.goals[k],v=d.m[k],pp=g?Math.min(100,Math.round(v/g*100)):0;return `<div style="font-size:.8rem;margin-top:8px;display:flex;justify-content:space-between"><span>${l} (this day)</span><span>${v} / ${g} ${u} ${g&&v>=g?'✓':''}</span></div><div class="bar" style="height:8px;margin-top:3px"><i style="width:${pp}%"></i></div>`}).join('');
+ ['water','cst','igDms'].forEach(k=>{if(document.activeElement!==$('g-'+k))$('g-'+k).value=S.goals[k]});$('r-on').checked=!!S.remind.on;$('r-time').value=S.remind.time;
+ chart();report()}
+function chart(){const c=$('chart');c.innerHTML='';for(let i=6;i>=0;i--){const n=todayN()-i,ok=n>=1&&n<=30,p=ok?pct(n):0,x=document.createElement('div');
+ x.innerHTML=`<i style="height:${p*.85}px;${p>=PASS?'':'background:#8a6d1c'}"></i>${p}%<br>${ok?short(n):'—'}`;c.appendChild(x)}}
+function report(){const t=todayN(),fin=t>30;$('rtitle').textContent=fin?'Final 30-Day Report':'Weekly Performance & Final Report';
+ let rows='',A={n:0,p:0,s:0,e:0,dm:0,pw:0};
+ for(let w=0;w<5;w++){const a=w*7+1,b=Math.min(30,a+6),ds=[];for(let n=a;n<=b;n++)if(!fut(n))ds.push(n);
+  if(!ds.length){rows+=`<tr><td>Week ${w+1} (Days ${a}-${b})</td><td colspan="4">Upcoming</td></tr>`;continue}
+  const td=ds.reduce((x,n)=>x+done(n),0),poss=ds.length*T.length,cs=ds.reduce((x,n)=>x+S.days[n-1].m.cst,0),dm=ds.reduce((x,n)=>x+S.days[n-1].m.igDms,0);
+  A.n+=td;A.p+=poss;A.pw+=ds.reduce((x,n)=>x+pct(n),0);A.s+=cs;A.e+=ds.length;A.dm+=dm;
+  rows+=`<tr><td>Week ${w+1} (Days ${a}-${b})</td><td>${td}/${poss}</td><td>${(cs/ds.length).toFixed(1)} h</td><td>${dm}</td><td>${Math.round(ds.reduce((x,n)=>x+pct(n),0)/ds.length)}%</td></tr>`}
+ rows+=`<tr><th>Total so far</th><th>${A.n}/${A.p}</th><th>${A.e?(A.s/A.e).toFixed(1):0} h</th><th>${A.dm}</th><th>${A.e?Math.round(A.pw/A.e):0}%</th></tr>`;
+ $('wk').innerHTML=`<thead><tr><th>Week / Period</th><th>Tasks Completed</th><th>Avg CST Study</th><th>Total DMs</th><th>Completion (weighted)</th></tr></thead><tbody>${rows}</tbody>`;
+ const pd=[];for(let n=1;n<=30;n++)if(past(n))pd.push(n);
+ const ms=T.map((x,i)=>({x,n:pd.filter(n=>!S.days[n-1].tasks[i]).length})).filter(o=>o.n).sort((a,b)=>b.n-a.n).slice(0,5);
+ $('miss').innerHTML=`<h3 style="font-size:.9rem;color:var(--gold);margin:14px 0 6px">Most missed tasks (past days only)</h3>`+(ms.length?ms.map(o=>`<div style="display:flex;justify-content:space-between;font-size:.82rem;padding:4px 0"><span>${o.x}</span><span style="color:var(--red)">${o.n} of ${pd.length} days</span></div>`).join(''):'<p class="note">No past days to analyse yet. Future days are never counted as missed.</p>')+`<p class="note">A day counts toward streaks at ${PASS}%+ completion.</p>`}
+function editTask(i,a){if(a==='rm'){if(T.length<=1){toast('Keep at least one task.',true);return}
+  if(!confirm(`Delete "${T[i]}"? Its history is removed from all 30 days.`))return;T.splice(i,1);S.w.splice(i,1);S.days.forEach(d=>d.tasks.splice(i,1))}
+ else{const j=a==='up'?i-1:i+1;if(j<0||j>=T.length)return;[T[i],T[j]]=[T[j],T[i]];[S.w[i],S.w[j]]=[S.w[j],S.w[i]];S.days.forEach(d=>{[d.tasks[i],d.tasks[j]]=[d.tasks[j],d.tasks[i]]})}
+ save();render()}
+$('editbtn').onclick=()=>{EDIT=!EDIT;render()};
+$('addbtn').onclick=()=>{const v=$('newtask').value.trim();if(!v){toast('Type a task name first.',true);return}if(T.length>=30){toast('Maximum 30 tasks.',true);return}
+ T.push(v.slice(0,100));S.w.push(1);S.days.forEach(d=>d.tasks.push(false));$('newtask').value='';save();render()};
+$('newtask').onkeydown=e=>{if(e.key==='Enter')$('addbtn').click()};
+$('prt').onclick=()=>window.print();
+(function(){const k='DISCIPLINE30_THEME';let t='dark';try{t=localStorage.getItem(k)||'dark'}catch(e){}
+ const ap=()=>document.documentElement.setAttribute('data-theme',t);ap();$('theme').onclick=()=>{t=t==='dark'?'light':'dark';ap();try{localStorage.setItem(k,t)}catch(e){}}})();
+['water','cst','igDms'].forEach(k=>$('g-'+k).oninput=e=>{const v=parseFloat(e.target.value);S.goals[k]=isFinite(v)&&v>=0?Math.min(v,1e4):0;save();render()});
+$('r-note').textContent=('Notification' in window)?'Reminders fire only while this page is open in your browser (there is no background server).':'This browser does not support notifications.';
+$('r-on').onchange=async e=>{if(e.target.checked){if(!('Notification' in window)){toast('Notifications are not supported in this browser.',true);e.target.checked=false;return}
+  let p=Notification.permission;if(p!=='granted')p=await Notification.requestPermission();if(p!=='granted'){toast('Notification permission was not granted.',true);e.target.checked=false;S.remind.on=false;save();return}}
+ S.remind.on=e.target.checked;S.remind.last='';save()};
+$('r-time').onchange=e=>{if(/^\d\d:\d\d$/.test(e.target.value)){S.remind.time=e.target.value;S.remind.last='';save()}};
+setInterval(()=>{const r=S.remind,n=new Date(),t=todayN();if(!r.on||!('Notification' in window)||Notification.permission!=='granted'||t<1||t>30||r.last===ymd(n))return;
+ const[h,m]=r.time.split(':').map(Number),diff=n.getHours()*60+n.getMinutes()-(h*60+m);if(diff<0||diff>10)return;
+ r.last=ymd(n);save();const body=`Day ${t}: ${T.length-done(t)} of ${T.length} tasks still open (${pct(t)}% done).`;try{new Notification('Discipline Challenge',{body})}catch(x){toast(body)}},20000);
+$('prev').onclick=()=>{if(S.sel>1){S.sel--;save();render()}};$('next').onclick=()=>{if(S.sel<30){S.sel++;save();render()}};
+MK.forEach(k=>$('m-'+k).oninput=e=>{const v=parseFloat(e.target.value);sel().m[k]=isFinite(v)&&v>0?Math.min(v,k==='water'?50:k==='cst'?24:1e7):0;save();render2()});
+$('m-notes').oninput=e=>{sel().m.notes=e.target.value.slice(0,5000);save()};
+function render2(){const a=document.activeElement&&document.activeElement.id;const v=a&&$(a)?$(a).value:null;render();if(a&&$(a)){$(a).value=v;$(a).focus()}}
+function dl(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+const td=()=>ymd(new Date());
+function exportJSON(){dl(`discipline_challenge_backup_${td()}.json`,JSON.stringify({app:'DISCIPLINE30',version:2,exportedAt:new Date().toISOString(),names:S.names,w:S.w,goals:S.goals,days:S.days},null,2),'application/json');toast('Backup downloaded')}
+$('exp').onclick=exportJSON;
+$('csv').onclick=()=>{const q=v=>{v=String(v);if(/^[=+\-@\t\r]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"'};
+ const rows=[['day','date','completion_pct','tasks_done',...MK,'notes',...T.map(x=>'task: '+x)],...S.days.map((d,i)=>[i+1,ymd(dd(i+1)),fut(i+1)?'':pct(i+1),done(i+1),...MK.map(k=>d.m[k]),d.m.notes,...d.tasks.map(v=>v?1:0)])];
+ dl(`discipline_challenge_${td()}.csv`,'\ufeff'+rows.map(r=>r.map(q).join(',')).join('\r\n'),'text/csv')};
+$('imp').onclick=()=>$('file').click();
+$('file').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;if(f.size>3e6){toast('File too large.',true);return}
+ const r=new FileReader();r.onerror=()=>toast('Could not read the file.',true);r.onload=()=>{let o;try{o=JSON.parse(r.result)}catch(x){toast('Not valid JSON. Nothing was changed.',true);return}
+  const n=clean(o);if(!n){toast('This is not a valid 30-day backup (needs 30 days with a matching task list). Nothing was changed.',true);return}
+  const days=n.days.filter((d,i)=>d.tasks.some(Boolean)||d.m.notes||MK.some(k=>d.m[k])).length;
+  if(!confirm(`Replace your current data with this backup?\n${days} of 30 days contain data.\nYour current data is kept as a safety copy first.`))return;
+  try{localStorage.setItem(KEY+'_PRE_IMPORT',JSON.stringify(S))}catch(x){}S=n;T=S.names;S.sel=Math.min(30,Math.max(1,todayN()));save();render();toast('Backup imported')};r.readAsText(f)};
+$('rst').onclick=()=>{if(prompt('This erases ALL challenge data on this device. A backup file downloads first.\nType RESET to continue:')!=='RESET'){toast('Reset cancelled');return}
+ exportJSON();try{localStorage.setItem(KEY+'_PRE_RESET',JSON.stringify(S))}catch(x){}S=fresh();T=S.names;S.sel=Math.min(30,Math.max(1,todayN()));save();render();toast('Challenge reset')};
+if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
+save();render();
+})();
+</script></body></html>
